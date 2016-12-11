@@ -16,11 +16,39 @@
 
     <label for="base">Base Color</label>
     <input type="color" name="base" value="#ffc600">
+
+    <br />
+    <label for="rounded-corners">Rounded Corners</label>
+    <input type="range" name="rounded-corners" min="0" max="500" value="0" data-sizing='px'>
+
+    <label for="grayscale">Grayscale</label>
+    <input type="range" name="grayscale" min="0" max="100" value="0" data-sizing='%'>
   </div>
 
   <img src="https://source.unsplash.com/7bwQXzbF6KE/800x500">
 
   <style>
+
+    :root {
+      --base: #ffc600;
+      --spacing: 10px;
+      --blur: 10px;
+      --rounded-corners: 0px; 
+      --grayscale: 0%;
+    }
+
+    img {
+      padding: var(--spacing);
+      background: var(--base);
+      filter: blur(var(--blur));
+      border-radius: var(--rounded-corners);
+      -webkit-filter: grayscale(var(--grayscale));
+      filter: grayscale(var(--grayscale));
+    }
+
+    .hl {
+      color: var(--base);
+    }
 
     /*
       misc styles, nothing to do with CSS variables
@@ -53,6 +81,16 @@
   </style>
 
   <script>
+    const inputs = document.querySelectorAll('.controls input');
+    
+    function handleUpdate() {
+      const suffix = this.dataset.sizing || '';
+      document.documentElement.style.setProperty(`--${this.name}`, this.value + suffix)
+    }
+
+    inputs.forEach(input => input.addEventListener('change', handleUpdate))
+    inputs.forEach(input => input.addEventListener('mousemove', handleUpdate))
+
   </script>
 
 </body>

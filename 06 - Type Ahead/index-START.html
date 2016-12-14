@@ -30,20 +30,59 @@ function findMatches(word, cities) {
   });
 }
 
+var userLocation;
+
+navigator.geolocation.getCurrentPosition(getLocation)
+
+function getLocation(pos) {
+  userLocation = pos.coords;
+}
+
+
+
+function Deg2Rad(deg) {
+  return deg * Math.PI / 180;
+}
+
+function PythagorasEquirectangular(lat1, lon1, lat2, lon2) {
+  lat1 = Deg2Rad(lat1);
+  lat2 = Deg2Rad(lat2);
+  lon1 = Deg2Rad(lon1);
+  lon2 = Deg2Rad(lon2);
+  var R = 6371;
+  var x = (lon2 - lon1) * Math.cos((lat1 + lat2) / 2);
+  var y = (lat2 - lat1);
+  var distance = Math.sqrt(x * x + y * y) * R;
+  return distance;
+}
+
 function displayMatches() {
   const matchArray = findMatches(this.value, cities);
+
+  const sorted_cities = matchArray.sort((cityA, cityB) => {
+    const difA = PythagorasEquirectangular(userLocation.latitude, userLocation.longitude, cityA.latitude, cityA.longitude);
+    const difB = dif = PythagorasEquirectangular(userLocation.latitude, userLocation.longitude, cityB.latitude, cityB.longitude);
+    if(difA > difB){
+      return 1
+    }
+    else {
+      return -1
+    }
+  });
+
   const regex = new RegExp(this.value, 'gi');
-  const html = matchArray.map(place => {
+  const html = sorted_cities.map(place => {
     let cityName = place.city.replace(regex, `<span class='hl'>${this.value}</span>`)
     let stateName = place.state.replace(regex, `<span class='hl'>${this.value}</span>`)
     let population = Number(place.population).toLocaleString('en')
+    let dist = PythagorasEquirectangular(userLocation.latitude, userLocation.longitude, place.latitude, place.longitude);
     return `
       <li>
         <span class='name'>${cityName}, ${stateName}</span>
         <span class='population'>${population}</span>
       </li>
     `
-  });
+  })
   suggestions.innerHTML = html;
 }
 

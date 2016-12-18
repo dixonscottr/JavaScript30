@@ -105,49 +105,73 @@
 
 <script>
 
-const checkedOrNot = (box) => {
-  return box.checked;
-}
+// const checkedOrNot = (box) => {
+//   return box.checked;
+// }
 
-const check = (box) => {
-  box.checked = true;
-}
+// const check = (box) => {
+//   box.checked = true;
+// }
 
-const uncheck = (box) => {
-  box.checked = false;
-}
+// const uncheck = (box) => {
+//   box.checked = false;
+// }
 
-const findLastCheckedBox = (box, checkboxes) => {
-  let last;
-  for(let i = 0; i < checkboxes.length; i++) {
-    if(checkedOrNot(checkboxes[i]) && checkboxes[i] != box) {
-      last = i;
-    }
-    if(checkboxes[i] === box) {
-      return last;
-    }
-  }
-}
+// const findLastCheckedBox = (box, checkboxes) => {
+//   let last;
+//   for(let i = 0; i < checkboxes.length; i++) {
+//     if(checkedOrNot(checkboxes[i]) && checkboxes[i] != box) {
+//       last = i;
+//     }
+//     if(checkboxes[i] === box) {
+//       return last;
+//     }
+//   }
+// }
 
-const findNodeIdx = (child, parent) => {
-  const pArr = Array.prototype.slice.call(parent);
-  const idx = pArr.indexOf(child)
-  return idx;
-}
+// const findNodeIdx = (child, parent) => {
+//   const pArr = Array.prototype.slice.call(parent);
+//   const idx = pArr.indexOf(child)
+//   return idx;
+// }
 
+// const checkboxes = document.querySelectorAll("input[type='checkbox']");
+// const checkBetweenBoxes = (event) => {
+//   if(event.shiftKey && findLastCheckedBox(event.target, checkboxes)) {
+//     const firstIdx = findLastCheckedBox(event.target, checkboxes);
+//     const lastIdx = findNodeIdx(event.target, checkboxes);
+//     for(let i = firstIdx; i < lastIdx; i++){
+//       check(checkboxes[i]);
+//     }
+//   }
+// }
+// checkboxes.forEach((checkbox) => {
+//   checkbox.addEventListener('click', checkBetweenBoxes);
+// })
+
+// their solution:
 const checkboxes = document.querySelectorAll("input[type='checkbox']");
-const checkBetweenBoxes = (event) => {
-  if(event.shiftKey && findLastCheckedBox(event.target, checkboxes)) {
-    const firstIdx = findLastCheckedBox(event.target, checkboxes);
-    const lastIdx = findNodeIdx(event.target, checkboxes);
-    for(let i = firstIdx; i < lastIdx; i++){
-      check(checkboxes[i]);
-    }
+
+let lastChecked;
+let inBetween = false;
+
+function handleCheck(event) {
+  if(event.shiftKey && this.checked) {
+    checkboxes.forEach(checkbox => {
+      if(checkbox === this || checkbox === lastChecked) {
+        inBetween = !inBetween;
+        console.log('Starting to check them in between')
+      }
+      if(inBetween) {
+        checkbox.checked = true;
+      }
+    })
   }
+  lastChecked = this;
 }
-checkboxes.forEach((checkbox) => {
-  checkbox.addEventListener('click', checkBetweenBoxes);
-})
+
+checkboxes.forEach(checkbox => checkbox.addEventListener('click', handleCheck))
+
 
 </script>
 </body>

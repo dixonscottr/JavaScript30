@@ -4,6 +4,10 @@ const ctx = canvas.getContext('2d');
 const strip = document.querySelector('.strip');
 const snap = document.querySelector('.snap');
 
+let redFilterOn = false;
+let rgbSplitFilterOn = false;
+let blurFilterOn = false;
+
 function getVideo() {
   navigator.mediaDevices.getUserMedia({
     video: true,
@@ -25,10 +29,16 @@ function paintToCanvas() {
     ctx.drawImage(video, 0, 0, width, height);
     // take pixels out
     let pixels = ctx.getImageData(0, 0, width, height);
-    // pixels = redEffect(pixels);
-    // pixels = rgbSplit(pixels);
-    // ctx.globalAlpha = 0.8;
-    pixels = greenScreen(pixels);
+    if(redFilterOn) {
+      pixels = redEffect(pixels);
+    }
+    if(rgbSplitFilterOn) {
+      pixels = rgbSplit(pixels);
+    }
+    if(blurFilterOn) {
+      ctx.globalAlpha = 0.1;
+    }
+    // pixels = greenScreen(pixels);
     ctx.putImageData(pixels, 0, 0);
   }, 16);
 }
@@ -84,6 +94,22 @@ function greenScreen(pixels) {
       pixels.data[i + 3] = 0;
     }
   }
+}
+function toggleRedFilter() {
+  redFilterOn = !redFilterOn;
+  console.log(redFilterOn);
+  getVideo();
+}
+function toggleRGBSplitFilter() {
+  rgbSplitFilterOn = !rgbSplitFilterOn;
+  console.log(rgbSplitFilterOn);
+  getVideo();
+}
+
+function toggleBlurFilter() {
+  blurFilterOn = !blurFilterOn
+  console.log(blurFilterOn);
+  getVideo();
 }
 
 getVideo();

@@ -19,8 +19,10 @@
 const speed = document.querySelector('.speed');
 const bar = speed.querySelector('.speed-bar');
 const video = document.querySelector('.flex');
+let isPressed = false
 
 function handleMousemove(e) {
+  if(!isPressed) return;
   const y = e.pageY - this.offsetTop;
   const percent = y / this.offsetHeight;
   const min = 0.5;
@@ -32,6 +34,16 @@ function handleMousemove(e) {
   video.playbackRate = playbackRate;
 }
 
+function handleMousedown() {
+  isPressed = true;
+}
+
+function handleMouseup() {
+  isPressed = false;
+}
+
+speed.addEventListener('mousedown', handleMousedown);
+speed.addEventListener('mouseup', handleMouseup);
 speed.addEventListener('mousemove', handleMousemove);
 
 </script>

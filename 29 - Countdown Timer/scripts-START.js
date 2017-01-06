@@ -14,6 +14,7 @@ function timer(seconds) {
     const secondsLeft = Math.round((then - Date.now()) / 1000);
     if(secondsLeft < 0) {
       clearInterval(countdown);
+      showTimeUp();
       return;
     }
     displayTimeLeft(secondsLeft);
@@ -48,3 +49,7 @@ document.customForm.addEventListener('submit', function(event) {
   timer(mins * 60);
   this.reset();
 })
+
+function showTimeUp() {
+  timerDisplay.textContent = 'TIME UP';
+}
